@@ -1,10 +1,25 @@
 
 
 var request = require('request');
+var fs = require('fs');
 var token = require('./secrets.js');
 
-console.log('weclome');
 
+
+function downloadImageByURL(url, filePath) {
+  request.get(url)
+       .on('error', function (err) {
+         console.log(err);
+         throw err;
+       })
+       .on('res', function(res) {
+        console.log('dl in progress...');
+       })
+       .on('end', function (end) {
+        console.log("Download of Complete!");
+       })
+       .pipe(fs.createWriteStream(filePath));
+}
 
 function getRepoContributors(repoOwner, repoName, cb) {
 
@@ -15,28 +30,18 @@ function getRepoContributors(repoOwner, repoName, cb) {
     }
   };
 
-
-
   request(options, function(err, res, body) {
     cb(err, body);
 
-    var result = [];
     var parsedBod = JSON.parse(body);
-
-
     for (var i = 0; i < parsedBod.length; i++){
-      result.push(parsedBod[i].avatar_url);
+      downloadImageByURL(parsedBod[i].avatar_url, `./images/${parsedBod[i].login}.jpg`);
     }
-
-
-    console.log(result);
-
   });
-
 }
 
 
 getRepoContributors("jquery", "jquery", function(err, result) {
   console.log("Errors:", err);
-  // console.log("Result:", result);
 });
+
