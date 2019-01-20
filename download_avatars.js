@@ -22,26 +22,25 @@ function downloadImageByURL(url, filePath) {
 }
 
 function getRepoContributors(repoOwner, repoName, cb) {
-
   var options = {
   url : "https://api.github.com/repos/" + repoOwner + "/" + repoName + "/contributors",
   headers : {
     "User-Agent" : 'token'
     }
   };
-
   request(options, function(err, res, body) {
     cb(err, body);
-
     var parsedBod = JSON.parse(body);
     for (var i = 0; i < parsedBod.length; i++){
-      downloadImageByURL(parsedBod[i].avatar_url, `./images/${parsedBod[i].login}.jpg`);
+      downloadImageByURL(parsedBod[i].avatar_url, `./avatars/${parsedBod[i].login}.jpg`);
     }
   });
 }
 
+let rOwner = process.argv[2];
+let rName = process.argv[3];
 
-getRepoContributors("jquery", "jquery", function(err, result) {
+getRepoContributors(rOwner, rName, function(err, result) {
   console.log("Errors:", err);
 });
 
