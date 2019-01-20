@@ -40,6 +40,10 @@ function getRepoContributors(repoOwner, repoName, cb) {
 let rOwner = process.argv[2];
 let rName = process.argv[3];
 
+if (rOwner === undefined || rName === undefined) {
+  console.log("Error - repo owner or repo name have not been given!")
+}
+
 getRepoContributors(rOwner, rName, function(err, result) {
   console.log("Errors:", err);
 });
